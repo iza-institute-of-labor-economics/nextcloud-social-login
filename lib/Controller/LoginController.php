@@ -299,7 +299,13 @@ class LoginController extends Controller
 
         $profile->data['default_group'] = $config['default_group'];
 
-        $uid = $provider.'-'.$profileId;
+        // According to company policy we have to use a different uid.
+        $uid = str_replace(' ', '_', trim($profile->displayName));
+        if(strpos($provider, 'briq') !== false || strpos($provider, 'BRIQ') !== false) {
+            $uid = str_replace(' ', '.', trim($profile->displayName));
+        }
+
+        # $uid = $provider.'-'.$profileId;
         if (strlen($uid) > 64 || !preg_match('#^[a-z0-9_.@-]+$#i', $profileId)) {
             $uid = $provider.'-'.md5($profileId);
         }
